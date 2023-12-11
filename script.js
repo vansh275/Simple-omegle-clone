@@ -3,19 +3,22 @@ const socket = io();
 var localVideo;
 var remoteVideo;
 var peerConnection;
+const callBTN= document.getElementById('call-btn');
 const configuration = { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }] };
-// var localStream;
-// var remoteStream;
-//window.addEventListener('load', makeCall);
 async function start() {
-
 
     peerConnection = await new RTCPeerConnection(configuration);
 
     peerConnection.addEventListener('connectionstatechange', event => {
+        console.log("connection changed");
         if (peerConnection.connectionState === 'connected') {
             console.log("ho gaya bhaya");
         }
+        if (peerConnection.iceConnectionState === 'disconnected') {
+            console.log("gone");
+            alert("Disconnected");
+        }
+
     });
 
     localVideo = document.getElementById("local-video");
@@ -28,12 +31,12 @@ async function start() {
         peerConnection.addTrack(track, stream);
     })
 
-
     document.getElementById("remote-video").srcObject = remoteVideo;
     //remoteVideo.srcObject = new MediaStream();
+    callBTN.addEventListener('click',call);
+}
 
-
-
+async function call() {
     peerConnection.ontrack = async (e) => {
         console.log(e);
         if (e.streams && e.streams[0]) {
@@ -44,9 +47,6 @@ async function start() {
             console.error("No streams or stream[0] in the 'ontrack' event.");
         }
     };
-
-
-
 
     peerConnection.onicecandidate = async (event) => {
         if (event.candidate) {
@@ -83,10 +83,42 @@ async function start() {
         socket.emit('answer', answer);
         console.log("answer sent");
     });
-
 }
 
+socket.on('userLeft', () => {
+    alert('userLeft');
+})
+
+// // async function userLeft(){
+// //     socket.emit('userLeft');
+// // }
+// document.onvisibilitychange = () => {
+//     // if (document.visibilityState === "hidden") {
+//     //   navigator.sendBeacon("/log", analyticsData);
+//     // }
+//     socket.emit('userLeft');
+//   };
+async function hangUp() {
+    socket.emit('userLeft');
+}
 window.addEventListener('load', start);
+
+//screen size adjustment
+
+// const ourVideo=document.getElementById('ourVideo');
+// const remoteVideo=document.getElementById('remoteVideo');
+// function addCenterClass() {
+//     if (window.innerWidth <= 700) {
+//         ourVideo.classList.add('text-center');
+//         remoteVideo.classList.add('text-center');
+//     } else {
+//         ourVideo.classList.remove('text-center');
+//         remoteVideo.classList.remove('text-center');
+//     }
+// }
+window.onresize = addCenterClass;
+
+//window.addEventListener('beforeunload',userLeft);
 
 
 

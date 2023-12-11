@@ -1,19 +1,37 @@
-h1{
-    color: blue;
+* {
+  margin: 0;
+  padding: 0;
 }
-#local-video, #remote-video {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
+
+body{
+  background-color: yellow;
+  /* background-image: linear-gradient(to bottom, #051937, #004d7a, #008793, #00bf72, #a8eb12); */
+}
+
+
+video {
+  height: 26%;
+  width: 26%;
+}
+
+.video-div {
+  text-align: left;
+}
+
+
+@media (max-width: 700px) {
+  video {
+    height: 90%;
+    width: 90%;
   }
   .video-div {
-    display: inline-block;
-    margin: 10px;
-    border: 1px solid black;
+    text-align: center;
+    margin: 0 0 2rem 0;
   }
-  
-  button {
-    margin: 10px;
-    padding: 10px;
-    font-size: 16px;
+  .omegleheading {
+    padding: 1.5rem;
   }
+  .btnsize {
+    margin: 1.5rem;
+  }
+}
